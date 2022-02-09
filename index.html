@@ -124,7 +124,15 @@
             myArray = myArray.sort((a,b) => a.rating < b.rating ? 1 : -1)
             buildTable(myArray)
             //console.log(myArray)
-        }
+        },
+		complete: function() {
+			$('.handles').click(function() {
+            	var id = $(this).attr('id');
+            	var index = id.charAt(id.length - 1) - '0'
+            	//console.log(index)
+            	window.location.href = "https://codeforces.com/profile/"+myArray[index].handle;
+        	})
+		}
     })
 
     $('th').on('click', function () {
@@ -183,14 +191,14 @@
 
 
     //document.getElementById('handle1').style.color = "blue"
-    $(document).ready(function() {
-        $('.handles').click(function() {
-            var id = $(this).attr('id');
-            var index = id.charAt(id.length - 1) - '0'
-            //console.log(index)
-            window.location.href = "https://codeforces.com/profile/"+myArray[index].handle;
-        })
-    })
+    // $(document).ready(function() {
+    //     $('.handles').click(function() {
+    //         var id = $(this).attr('id');
+    //         var index = id.charAt(id.length - 1) - '0'
+    //         //console.log(index)
+    //         window.location.href = "https://codeforces.com/profile/"+myArray[index].handle;
+    //     })
+    // })
 
 </script>
 </body>
