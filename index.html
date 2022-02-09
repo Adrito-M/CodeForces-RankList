@@ -1,0 +1,196 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="jquery-csv.js"></script>
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<style>
+    th {
+        color: #fff;
+    }
+</style>
+
+<body>
+
+<!-- <div class="spinner-border" role="status">
+    <span class="sr-only">Loading...</span>
+</div> -->
+
+<table class="table table-striped">
+    <tr class="bg-info">
+        <th data-column="handle" data-order="desc">Handle &#9650</th>
+        <th data-column="rating" data-order="desc" style="text-align:center">Rating &#9650</th>
+        <th data-column="maxRating" data-order="desc" style="text-align:center">Max Rating</th>
+        <th data-column="ratingChange" data-order="desc" style="text-align:center">Last Rating Change &#9650</th>
+        <th data-column="rank" data-order="desc">Rank</th>
+    </tr>
+
+    <tbody id="myTable">
+
+    </tbody>
+</table>
+
+<script>
+
+    // let spinnerWrapper = document.querySelector('.spinner-border')
+
+    // window.addEventListener('load', function() {
+    //     spinnerWrapper.parentElement.removeChild(spinnerWrapper)
+    // })
+    const retry_lim = 500
+    function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    var myArray = []
+    const col = 'red'
+    const map = new Map([
+                            ['unranked', 'black'],
+                            ['newbie', '#808080'],
+                            ['pupil', '#008000'],
+                            ['specialist', '#03a89e'],
+                            ['expert', '#0000ff'],
+                            ['candidate master', '#800080'],
+                            ['master', '#ffa500'],
+                            ['international master', '#ffa500'],
+                            ['grandmaster', '#ff0000'],
+                            ['international grandmaster', '#ff0000'],
+                            ['legendary grandmaster', '#ff0000']
+                        ])
+    
+    var user_list = []
+
+    //var data;
+
+	$.ajax({
+        url: "handles_csv.csv",
+        async: false,
+        success: function (csvd) {
+            var items = $.csv.toObjects(csvd)
+            for (var i = 0; i < items.length; i++) {
+                user_list.push(items[i]["Codeforces Handle"])
+            }
+            console.log(user_list)
+        },
+        dataType: "text"
+    // complete: function () {
+    //     // call a function on complete 
+    // }
+    });
+
+    var user_info_url = 'https://codeforces.com/api/user.info?handles='
+
+    for (var i = 0; i < user_list.length; i++) {
+        user_info_url = user_info_url.concat(';', user_list[i])
+    }
+
+    //var newArr = []
+
+    $.ajax({
+        method: 'GET',
+        url: user_info_url,
+        async: true,
+        success: function (response) {
+            myArray = response.result
+            for (var i = 0; i < myArray.length; i++) {
+                if (myArray[i].rating == undefined) {
+                    myArray[i].rating = '0'
+                    myArray[i].rank = 'unrated'
+                    myArray[i].maxRating = '0'
+                }
+                var ratingChange = 0
+                //var temp = myArray[i]
+                $.ajax({
+                    method: 'GET',
+                    url: 'https://codeforces.com/api/user.rating?handle=' + myArray[i].handle,
+                    async: false,
+                    success: function (response) {
+                        var newArr = response.result
+                        var lastIndex = newArr.length - 1
+                        //console.log(newArr)
+                        //console.log(myArray[i].friendOfCount)
+                        ratingChange = (parseInt(newArr[lastIndex].newRating) - parseInt(newArr[lastIndex].oldRating))
+                        //console.log(ratingChange)
+                        //console.log(temp)
+                    },
+                    error: function(err) {
+                        console.log('error error')
+                        $.ajax(this)
+                    }
+                })
+                
+                myArray[i].ratingChange = ratingChange
+            }
+            myArray = myArray.sort((a,b) => a.rating < b.rating ? 1 : -1)
+            buildTable(myArray)
+            //console.log(myArray)
+        }
+    })
+
+    $('th').on('click', function () {
+        var column = $(this).data('column')
+        var order = $(this).data('order')
+        var text = $(this).html()
+        if (column != 'rank') text = text.substring(0, text.length - 1)
+
+        if (order == 'desc' && column != 'rank') {
+            $(this).data('order', "asc")
+            myArray = myArray.sort((a, b) => a[column] > b[column] ? 1 : -1)
+            text += '&#9660'
+
+        } else if (order == 'asc' && column != 'rank'){
+            $(this).data('order', "desc")
+            myArray = myArray.sort((a, b) => a[column] < b[column] ? 1 : -1)
+            text += '&#9650'
+
+        }
+        $(this).html(text)
+        buildTable(myArray)
+    })
+
+    buildTable(myArray)
+
+    function buildTable(data) {
+        var table = document.getElementById('myTable')
+        table.innerHTML = ''
+        for (var i = 0; i < data.length; i++) {
+            var handle = data[i].handle
+            var maxRating = data[i].maxRating
+            var rating = data[i].rating
+            var rank = data[i].rank
+            var ratingChange = data[i].ratingChange
+            if (ratingChange > 0) {
+                var chcol = "green"
+            }
+            else if (ratingChange < 0) {
+                var chcol = "red"
+            }
+            else {
+                var chcol = "black"
+            }
+            ratingChange = (ratingChange<=0?"":"+") + ratingChange
+            var row = `<tr>
+                            <td id = 'handle${i}' class = 'handles' style = 'color:${map.get(rank)}; font-weight:bold;cursor:pointer;'>${handle}</td>
+							<td style = 'color:${map.get(rank)}; font-weight:bold; text-align:center;'>${rating}</td>
+                            <td style = 'color:${map.get(rank)}; font-weight:bold; text-align:center;'>${maxRating}</td>
+                            <td style = 'color:${chcol}; font-weight:bold; text-align:center;'>${ratingChange}</td>
+							<td style = 'color:${map.get(rank)}; font-weight:bold;'>${rank}</td>
+					  </tr>`
+            table.innerHTML += row
+
+        }
+    }
+
+
+    //document.getElementById('handle1').style.color = "blue"
+    $(document).ready(function() {
+        $('.handles').click(function() {
+            var id = $(this).attr('id');
+            var index = id.charAt(id.length - 1) - '0'
+            //console.log(index)
+            window.location.href = "https://codeforces.com/profile/"+myArray[index].handle;
+        })
+    })
+
+</script>
+</body>
