@@ -5,6 +5,93 @@
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
 <style>
+   body
+{
+  margin:0;
+  padding:0;
+  background:rgb(255, 255, 255);
+}
+.ring
+{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:150px;
+  height:150px;
+  background:transparent;
+  border:3px solid #3c3c3c;
+  border-radius:50%;
+  text-align:center;
+  line-height:150px;
+  font-family:sans-serif;
+  font-size:20px;
+  color:#000000;
+  letter-spacing:4px;
+  text-transform:uppercase;
+  
+  box-shadow:0 0 20px rgba(0,0,0,.5);
+}
+.ring:before
+{
+  content:'';
+  position:absolute;
+  top:-0px;
+  left:-0px;
+  width:100%;
+  height:100%;
+  border:3px solid transparent;
+  border-top:3px solid #000000;
+  border-right:3px solid #000000;
+  border-radius:50%;
+  animation:animateC 2s linear infinite;
+}
+span
+{
+  display:block;
+  position:absolute;
+  top:calc(50% - 2px);
+  left:50%;
+  width:50%;
+  height:4px;
+  background:transparent;
+  transform-origin:left;
+  animation:animate 2s linear infinite;
+}
+span:before
+{
+  content:'';
+  position:absolute;
+  width:16px;
+  height:16px;
+  border-radius:50%;
+  background:#00a2ff;
+  top:-6px;
+  right:-8px;
+  box-shadow:0 0 20px #00a2ff;
+}
+@keyframes animateC
+{
+  0%
+  {
+    transform:rotate(0deg);
+  }
+  100%
+  {
+    transform:rotate(360deg);
+  }
+}
+@keyframes animate
+{
+  0%
+  {
+    transform:rotate(45deg);
+  }
+  100%
+  {
+    transform:rotate(405deg);
+  }
+}
     th {
         color: #fff;
     }
@@ -15,7 +102,9 @@
 <!-- <div class="spinner-border" role="status">
     <span class="sr-only">Loading...</span>
 </div> -->
-
+<div class="ring">Loading
+    <span></span>
+  </div>
 <table class="table table-striped">
     <tr class="bg-info">
         <th data-column="handle" data-order="desc">Handle &#9650</th>
@@ -30,7 +119,15 @@
     </tbody>
 </table>
 
+
+
+
+
+
 <script>
+
+    
+
 
     // let spinnerWrapper = document.querySelector('.spinner-border')
 
@@ -39,7 +136,7 @@
     // })
     const retry_lim = 500
     function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     var myArray = []
@@ -65,6 +162,7 @@
 	$.ajax({
         url: "handles_csv.csv",
         async: false,
+        beforeSend: function(){},
         success: function (csvd) {
             var items = $.csv.toObjects(csvd)
             for (var i = 0; i < items.length; i++) {
@@ -78,6 +176,8 @@
     // }
     });
 
+
+
     var user_info_url = 'https://codeforces.com/api/user.info?handles='
 
     for (var i = 0; i < user_list.length; i++) {
@@ -85,7 +185,7 @@
     }
 
     //var newArr = []
-
+ 
     $.ajax({
         method: 'GET',
         url: user_info_url,
@@ -130,8 +230,10 @@
             	var id = $(this).attr('id');
             	var index = id.charAt(id.length - 1) - '0'
             	//console.log(index)
-            	window.location.href = "https://codeforces.com/profile/"+myArray[index].handle;
+            	window.location.href = "https://codeforces.com/profile/"+myArray[index].handle;      
         	})
+            console.log("hellowlwlwlelsdklfsljkfd")
+            $('.ring').remove();
 		}
     })
 
