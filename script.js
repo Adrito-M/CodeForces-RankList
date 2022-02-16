@@ -66,7 +66,7 @@ async function main() {
 
     handleInfo.sort((a, b) => b.rating - a.rating);
     
-    console.log(handleInfo);
+    //console.log(handleInfo);
 
     buildTable(handleInfo);
 
@@ -92,7 +92,7 @@ async function main() {
                 handleInfo[index].ratingChange = change;
             });
             // document.addEventListener('DOMContentLoaded', (e) => console.log('brr'));
-            console.log("done");
+            //console.log("done");
 
         }, i * 1000, i);
     }
