@@ -42,7 +42,6 @@ async function main() {
     const csv = await fetch('handles_csv.csv').then(csv => csv.text()).then(csvText => CSVToJSON(csvText));
     var handles = [];
     var handleURL = "https://codeforces.com/api/user.info?handles="
-
     csv.forEach(user => {
         handles.push(user["Codeforces Handle"].trim());
         handleURL = handleURL.concat(`${user["Codeforces Handle"].trim()};`);
