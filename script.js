@@ -62,13 +62,14 @@ async function main() {
     } catch {
         document.getElementById("loader").style.display = "none";
         errorfunc()
+        return
     }
     
     handleInfo.forEach((userinfo, index) => {
-        let temp = (csv[index]['email'].match(/[a-z]+\d\d@/))[0]
-        userinfo.year = '20' + temp.substring(temp.length - 3, temp.length - 1)
+        let temp = (csv[index]['email'].match(/[a-z]+\d\d/))[0]
+        userinfo.year = '20' + temp.substring(temp.length - 2, temp.length)
         years.add(userinfo.year)
-        userinfo.branch = temp.substring(0, temp.length - 3).toUpperCase()
+        userinfo.branch = temp.substring(0, temp.length - 2).toUpperCase()
         branches.add(userinfo.branch)
         if (userinfo.rating == undefined) {
             userinfo.rating = 0;
