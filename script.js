@@ -59,7 +59,7 @@ async function main() {
         handleInfo = await fetch(handleURL)
         .then(response => response.json())
         .then(jsonObj => jsonObj.result);
-    } catch {
+    } catch (err) {
         document.getElementById("loader").style.display = "none";
         errorfunc()
         return
