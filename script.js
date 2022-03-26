@@ -210,18 +210,18 @@ function clickEventHandler(element, whichlist) {
 function errorfunc() {
     let element = document.getElementById("mainBody")    
     element.innerHTML = `<div style="
-    color: #666666;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    -ms-transform: translateX(-50%) translateY(-50%);
-    -webkit-transform: translate(-50%,-50%);
-    transform: translate(-50%,-50%);
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    font-weight: bolder;
-    font-size: x-large;
-    text-align: center;
-    ">SEEMS LIKE CODEFORCES IS DOWN<br><span style="font-size: large">Please try again later<span></div>`
+                        color: #666666;
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        -ms-transform: translateX(-50%) translateY(-50%);
+                        -webkit-transform: translate(-50%,-50%);
+                        transform: translate(-50%,-50%);
+                        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+                        font-weight: bolder;
+                        font-size: x-large;
+                        text-align: center;
+                        ">SEEMS LIKE CODEFORCES IS DOWN<br><span style="font-size: large">Please try again later<span></div>`
 }
 
 const map = new Map([
